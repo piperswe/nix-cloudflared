@@ -54,7 +54,7 @@ with lib;
           # an internal bug for this, but until it gets fixed we can use this
           # wrapper script.
           token=$(cat '${config.services.cloudflared.tokenFile}')
-          exec '${config.services.cloudflared.package}/bin/cloudflared tunnel' --no-autoupdate run --token="$token"
+          exec '${config.services.cloudflared.package}/bin/cloudflared' tunnel --no-autoupdate run --token="$token"
         '';
         Restart = "always";
         User = "cloudflared";
