@@ -53,8 +53,8 @@ with lib;
           # token right into the command line (viewable through ps). I've filed
           # an internal bug for this, but until it gets fixed we can use this
           # wrapper script.
-          token=\"$(cat ${config.services.cloudflared.tokenFile})\"
-          exec ${config.services.cloudflared.package}/bin/cloudflared tunnel --no-autoupdate run --token=\"$token\"
+          token=$(cat '${config.services.cloudflared.tokenFile}')
+          exec '${config.services.cloudflared.package}/bin/cloudflared tunnel' --no-autoupdate run --token="$token"
         '';
         Restart = "always";
         User = "cloudflared";
