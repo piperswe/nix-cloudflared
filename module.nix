@@ -1,7 +1,7 @@
 { config, pkgs, lib, ... }:
 with lib;
 {
-  options.services.cloudflared = {
+  options.services.cloudflared-flake = {
     enable = mkEnableOption "cloudflared";
     package = mkOption {
       type = types.package;
@@ -35,7 +35,7 @@ with lib;
       '';
     };
   };
-  config = mkIf config.services.cloudflared.enable {
+  config = mkIf config.services.cloudflared-flake.enable {
     users.users.cloudflared = {
       group = "cloudflared";
       isSystemUser = true;
@@ -53,8 +53,8 @@ with lib;
           # token right into the command line (viewable through ps). I've filed
           # an internal bug for this, but until it gets fixed we can use this
           # wrapper script.
-          token=$(cat '${config.services.cloudflared.tokenFile}')
-          exec '${config.services.cloudflared.package}/bin/cloudflared' tunnel --no-autoupdate run --token="$token"
+          token=$(cat '${config.services.cloudflared-flake.tokenFile}')
+          exec '${config.services.cloudflared-flake.package}/bin/cloudflared' tunnel --no-autoupdate run --token="$token"
         '';
         Restart = "always";
         User = "cloudflared";
