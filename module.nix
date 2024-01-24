@@ -44,6 +44,7 @@ with lib;
 
     systemd.services.cloudflared = {
       wantedBy = [ "multi-user.target" ];
+      requires = [ "network-online.target" ] ++ (optional config.services.resolved.enable "systemd-resolved.service");
       after = [ "network-online.target" ] ++ (optional config.services.resolved.enable "systemd-resolved.service");
       serviceConfig = {
         ExecStart = pkgs.writeShellScript "start-cloudflared" ''
