@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 with lib;
 {
   options.services.cloudflared-flake = {
@@ -44,14 +49,20 @@ with lib;
 
     systemd.services.cloudflared = {
       wantedBy = [ "multi-user.target" ];
-      requires = [ "network-online.target" ] ++ (optional config.services.resolved.enable "systemd-resolved.service");
-      after = [ "network-online.target" ] ++ (optional config.services.resolved.enable "systemd-resolved.service");
+      requires = [
+        "network-online.target"
+      ]
+      ++ (optional config.services.resolved.enable "systemd-resolved.service");
+      after = [
+        "network-online.target"
+      ]
+      ++ (optional config.services.resolved.enable "systemd-resolved.service");
       serviceConfig = {
         ExecStart = "${config.services.cloudflared-flake.package}/bin/cloudflared tunnel run";
-	Environment = {
-	  "TUNNEL_TOKEN_FILE" = config.services.cloudflared-flake.tokenFile;
-	  "NO_AUTOUPDATE" = "true";
-	};
+        Environment = {
+          "TUNNEL_TOKEN_FILE" = config.services.cloudflared-flake.tokenFile;
+          "NO_AUTOUPDATE" = "true";
+        };
         Restart = "always";
         User = "cloudflared";
         Group = "cloudflared";
