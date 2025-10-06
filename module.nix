@@ -47,16 +47,11 @@ with lib;
       requires = [ "network-online.target" ] ++ (optional config.services.resolved.enable "systemd-resolved.service");
       after = [ "network-online.target" ] ++ (optional config.services.resolved.enable "systemd-resolved.service");
       serviceConfig = {
-        ExecStart = pkgs.writeShellScript "start-cloudflared" ''
-          set -euxo pipefail
-          # Ideally, cloudflared would read the token directly from the token
-          # file. Sadly, it doesn't have that functionality and just spits the
-          # token right into the command line (viewable through ps). I've filed
-          # an internal bug for this, but until it gets fixed we can use this
-          # wrapper script.
-          token=$(cat '${config.services.cloudflared-flake.tokenFile}')
-          exec '${config.services.cloudflared-flake.package}/bin/cloudflared' tunnel --no-autoupdate run --token="$token"
-        '';
+        ExecStart = "${config.services.cloudflared-flake.package}/bin/cloudflared tunnel run";
+	Environment = {
+	  "TUNNEL_TOKEN_FILE" = config.services.cloudflared-flake.tokenFile;
+	  "NO_AUTOUPDATE" = "true";
+	};
         Restart = "always";
         User = "cloudflared";
         Group = "cloudflared";
